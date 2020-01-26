@@ -1,11 +1,12 @@
 #import libs
 from collections import defaultdict #better dict type. easier to make graphs
+import sys
 
 #define graph class
 def Graph:
     #Constructor
     def __init__(self):
-        self.node = defaultdict(list)  #a node is just a list (of vertices) in the graph
+        self.node = defaultdict(list)  #a node is just a list (of vertice - cost tuples) in the graph
     #add edge
     def addEdge(self,n,v):
         self.node[n].append(v)     #adds edge v to node n.
@@ -24,24 +25,27 @@ def Graph:
                 self.DFSUtil(i, visited)
 
 
-#create data array from input file
+#Open input file, set goals
+fileName = sys.argv[1]
+fromCity = sys.argv[2]
+toCity = sys.argv[3]
+
+f = open(fileName, 'r')
 
 #form tree
+g = Graph()
+for line in f:
+    words = line.split()
+    g.addEdge(words[0], (words[1], words[2]))       #input node, and vertice/distance tuple
+
+f.close()
 
 #uninformed search
-#using DFS. need LIFO queue.
+g.DFS(fileName)
 
-
-#frontier.append(start)
-#while frontier.len > 0
-    #cur = pop.frontier
-    #if cur == goal
-        #return
-    #if cur not in explored
-        #explored.append(cur)
-    #frontier.append(cur.children[i])
-    #i++
-
+#go throughs all nodes. need to stop at destination node.
+#need a way to add distance as well and find shortest path
+#"path" list?
 
 
 
