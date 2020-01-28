@@ -26,8 +26,6 @@ class Graph:
         visited = [] #all vertices start uninitialized
         self.DFSUtil(start, stop, visited)
 
-def dijkstra(Graph, source, dest)
-
 
 #Open input file, set goals
 fileName = sys.argv[1]
