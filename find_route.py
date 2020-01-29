@@ -2,31 +2,47 @@
 from collections import defaultdict #better dict type. easier to make graphs
 import sys
 
+inf = float('inf')
+
 #define graph class
 class Graph:
     #Constructor
     def __init__(self):
-        self.graph = defaultdict(list)  #a node is just a list (of vertice - cost tuples) in the graph
+        self.nodes = set()                  #can only be 1 of each node so we use set
+        self.edges = defaultdict(list)      #want a dictionary of lists. defaultdict is best for this
+        self.distances = {}                 #want dictionary for distances
+
     #add edge
-    def addEdge(self,n,v):
-        self.graph[n].append(v)     #adds edge v to node n.
+    def addEdge(self, n1, n2, d):
+        self.nodes.add(n1)
+        self.nodes.add(n2)
+        self.edges[n1].append(n2)
+        self.edges[n2].append(n1)       #assuming 2 way graph... can typically go to/from cities
+        self.distances[(n1, n2)] = d
 
-    def DFSUtil(self, v, visited):
-        visited.append(v)   #current node has now been visited
-        #print(visited)
-        print(v)
-        for i in self.graph[v]:
-            i = i[0]
-            if i not in visited: #for all unvisited edges repeat this
-                self.DFSUtil(i, visited)
 
-    def DFS(self, start):
-        V = len(self.graph) #total vertices
-        print('Total Vertices', V)
-        visited = [] #all vertices start uninitialized
-        self.DFSUtil(start, stop, visited)
 
-def dijkstra(Graph, source, dest)
+def dijkstra(graph, source, dest):
+    unvisited = set(graph.nodes)
+    visited = set()
+    dist = {}
+
+    for n in unvisited:
+        dist[n] = inf #infinity
+    dist[source] = 0
+
+    cur = source
+    while unvisited:
+        if visited.
+        for n in graph.edges[cur]:
+            sum = dist[cur] + graph.distances[(cur, n)]
+            if sum < dist[n]
+                dist[n] = sum
+        unvisited.remove(cur)
+        visited.add(cur)
+        cur = min(dist, key=d.get)
+
+
 
 
 #Open input file, set goals
@@ -42,13 +58,14 @@ for line in f:
     if line == 'END OF INPUT\n':
         break
     words = line.split()
-    g.addEdge(words[0], (words[1], words[2]))       #input node, and vertice/distance tuple
+    g.addEdge(words[0], words[1], words[2])       #from city, to city, distance
 
 f.close()
 
 print('beginning search')
+
 #uninformed search
-g.DFS(fromCity, toCity)
+dijkstra(g, fromCity, toCity)
 
 #go throughs all nodes. need to stop at destination node.
 #need a way to add distance as well and find shortest path
