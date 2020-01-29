@@ -9,4 +9,5 @@
     a priorityqueue with changeable priority (that you won't need to
     install) so I went with the Set datastructure.
 5.  python3 find_route.py input_filename from_city to_city
+        if python3 gives you permission denied use python
         All modules I use are built-in so you shouldn't have any problems.
