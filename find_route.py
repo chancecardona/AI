@@ -1,6 +1,6 @@
 #import libs
-from collections import defaultdict #better dict type. easier to make graphs
 import sys
+from collections import defaultdict #better dict type. easier to make graphs
 
 inf = float('inf')
 
@@ -18,30 +18,42 @@ class Graph:
         self.nodes.add(n2)
         self.edges[n1].append(n2)
         self.edges[n2].append(n1)       #assuming 2 way graph... can typically go to/from cities
-        self.distances[(n1, n2)] = d
-
+        self.distances[(n1, n2)] = int(d)
+        self.distances[(n2, n1)] = int(d)
 
 
 def dijkstra(graph, source, dest):
-    unvisited = set(graph.nodes)
-    visited = set()
+    Q = set()
     dist = {}
+    prev = {}
 
-    for n in unvisited:
-        dist[n] = inf #infinity
+    for n in graph.nodes:
+        dist[n] = inf
+        prev[n] = 'UNDEFINED'
+        Q.add(n)
     dist[source] = 0
 
-    cur = source
-    while unvisited:
-        if visited.
+    while Q:
+        #Find node with minimum distance
+        cur = None
+        for i in Q:
+            if cur is None:
+                cur = i
+            elif dist[i] < dist[cur]:
+                cur = i
+        #Node is no longer unvisited
+        Q.remove(cur)
+
+        if cur == dest:
+            break
+        #Finds total distance for each neighbor
         for n in graph.edges[cur]:
             sum = dist[cur] + graph.distances[(cur, n)]
-            if sum < dist[n]
+            if sum < dist[n]:
                 dist[n] = sum
-        unvisited.remove(cur)
-        visited.add(cur)
-        cur = min(dist, key=d.get)
+                prev[n] = cur
 
+    return dist, prev
 
 
 
@@ -62,16 +74,27 @@ for line in f:
 
 f.close()
 
-print('beginning search')
-
 #uninformed search
-dijkstra(g, fromCity, toCity)
+dist, prev = dijkstra(g, fromCity, toCity)
+#print(dist)
+#print(prev)
 
-#go throughs all nodes. need to stop at destination node.
-#need a way to add distance as well and find shortest path
-#"path" list?
+path = []
+u = toCity
+if prev[u] != 'UNDEFINED' or u == fromCity:
+    while u != 'UNDEFINED':
+        path.insert(0, u)
+        u = prev[u]
 
+if dist[toCity] == inf:
+    print('distance: infinity')
+    print('route:')
+    print('none')
+else:
+    print('distance:', dist[toCity], 'km')
+    print('route:')
+    for i in range(1, len(path)):
+        p = path[i-1]
+        c = path[i]
+        print(p, 'to', c+',', g.distances[(p, c)], 'km')
 
-
-
-#output simplified results
