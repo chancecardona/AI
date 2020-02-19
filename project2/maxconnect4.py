@@ -1,20 +1,22 @@
 #!/usr/bin/env python
 
-# Written by Chris Conly based on C++
+# Originally written by Chris Conly based on C++
 # code provided by Dr. Vassilis Athitsos
-# Written to be Python 2.4 compatible for omega
+#
+# Modified by Chance Cardona
+# Written to be Python 3.7 compatible since we don't live in 2008
 
 import sys
 from MaxConnect4Game import *
 
 def oneMoveGame(currentGame):
     if currentGame.pieceCount == 42:    # Is the board full already?
-        print 'BOARD FULL\n\nGame Over!\n'
+        print('BOARD FULL\n\nGame Over!\n')
         sys.exit(0)
 
     currentGame.aiPlay() # Make a move (only random is implemented)
 
-    print 'Game state after move:'
+    print('Game state after move:')
     currentGame.printGameBoard()
 
     currentGame.countScore()
@@ -24,15 +26,46 @@ def oneMoveGame(currentGame):
     currentGame.gameFile.close()
 
 
-def interactiveGame(currentGame):
-    # Fill me in
-    sys.exit('Interactive mode is currently not implemented')
+def interactiveGame(currentGame, nextTurn):
+    firstLoop = True   # First time running the loop. For next turn to work.
+    while currentGame.pieceCount < 42:    # Keep going until board is full
+        print('Game state after move:')
+        currentGame.printGameBoard()
+        currentGame.countScore()
+        print('Score: Player 1 = %d, Player 2 = %d\n' % (currentGame.player1Score, currentGame.player2Score))
+        
+        if firstLoop and nextTurn == 'human-next':
+            currentGame.humanPlay()
+            #Save Board State
+            currentGame.gameFile = open('human.txt', 'w')
+            currentGame.printGameBoardToFile()
+            currentGame.gameFile.close()
+            firstLoop = False
+
+
+        #AI plays    
+        currentGame.aiPlay()
+        #Save Board State
+        currentGame.gameFile = open('computer.txt', 'w')
+        currentGame.printGameBoardToFile()
+        currentGame.gameFile.close()
+        #Human Plays
+        currentGame.humanPlay()
+        #Save Board State
+        currentGame.gameFile = open('human.txt', 'w')
+        currentGame.printGameBoardToFile()
+        currentGame.gameFile.close()
+    
+        
+
+    print('BOARD FULL\n\nGame Over!\n')
+    sys.exit(0)    
 
 
 def main(argv):
     # Make sure we have enough command-line arguments
     if len(argv) != 5:
-        print 'Four command-line arguments are needed:'
+        print('Four command-line arguments are needed:')
         print('Usage: %s interactive [input_file] [computer-next/human-next] [depth]' % argv[0])
         print('or: %s one-move [input_file] [output_file] [depth]' % argv[0])
         sys.exit(2)
@@ -57,8 +90,8 @@ def main(argv):
     currentGame.currentTurn = int(file_lines[-1][0])
     currentGame.gameFile.close()
 
-    print '\nMaxConnect-4 game\n'
-    print 'Game state before move:'
+    print('\nMaxConnect-4 game\n')
+    print('Game state before move:')
     currentGame.printGameBoard()
 
     # Update a few game variables based on initial state and print the score
@@ -67,7 +100,10 @@ def main(argv):
     print('Score: Player 1 = %d, Player 2 = %d\n' % (currentGame.player1Score, currentGame.player2Score))
 
     if game_mode == 'interactive':
-        interactiveGame(currentGame) # Be sure to pass whatever else you need from the command line
+        nextTurn = argv[3]
+        if not nextTurn == 'computer_next' and not nextTurn == 'human-next':
+            print('%s is an unrecognized next player. Please enter either computer-next or human-next' % nextTurn) 
+        interactiveGame(currentGame, nextTurn) # Be sure to pass whatever else you need from the command line
     else: # game_mode == 'one-move'
         # Set up the output file
         outFile = argv[3]

@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 
-# Written by Chris Conly based on C++
+# Originally written by Chris Conly based on C++
 # code provided by Vassilis Athitsos
-# Written to be Python 2.4 compatible for omega
+#
+# Modified by Chance Cardona to include AI components.
+# Written to be Python 3.7 since we don't live in 2008
 
 from copy import copy
 import random
@@ -24,13 +26,13 @@ class maxConnect4Game:
 
     # Output current game status to console
     def printGameBoard(self):
-        print ' -----------------'
+        print(' -----------------')
         for i in range(6):
-            print ' |',
+            print(' |', end = ' ')
             for j in range(7):
-                print('%d' % self.gameBoard[i][j]),
-            print '| '
-        print ' -----------------'
+                print('%d' % self.gameBoard[i][j], end = ' ')
+            print('| ')
+        print(' -----------------')
 
     # Output current game status to file
     def printGameBoardToFile(self):
@@ -59,6 +61,22 @@ class maxConnect4Game:
                 self.currentTurn = 2
             elif self.currentTurn == 2:
                 self.currentTurn = 1
+
+
+    # The Player section. Takes user input.
+    def humanPlay(self):
+        column = int(input('Choose a column (1 to 7) to place piece in!\n'))
+        result = self.playPiece(column-1)
+        if not result:
+            self.humanPlay()
+        else:
+            print('\n\nmove %d: Player %d, column %d\n' % (self.pieceCount, self.currentTurn, column))
+            if self.currentTurn == 1:
+                self.currentTurn = 2
+            elif self.currentTurn == 2:
+                self.currentTurn = 1
+
+
 
     # Calculate the number of 4-in-a-row each player has
     def countScore(self):
