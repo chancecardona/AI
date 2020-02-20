@@ -37,8 +37,8 @@ class maxConnect4Game:
     # Output current game status to file
     def printGameBoardToFile(self):
         for row in self.gameBoard:
-            self.gameFile.write(''.join(str(col) for col in row) + '\r\n')
-        self.gameFile.write('%s\r\n' % str(self.currentTurn))
+            self.gameFile.write(''.join(str(col) for col in row) + '\n')
+        self.gameFile.write('%s\n' % str(self.currentTurn))
 
     # Place the current player's piece in the requested column
     def playPiece(self, column):
