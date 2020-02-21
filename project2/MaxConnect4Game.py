@@ -6,9 +6,10 @@
 # Modified by Chance Cardona to include AI components.
 # Written to be Python 3.7 since we don't live in 2008
 
-from copy import copy
+from copy import copy, deepcopy
 import random
 import sys
+from minimax import minimax
 
 class maxConnect4Game:
     def __init__(self):
@@ -19,6 +20,11 @@ class maxConnect4Game:
         self.pieceCount = 0
         self.gameFile = None
         random.seed()
+
+    def fullCopy(self):
+        copyObj = copy(self)
+        copyObj.gameBoard = deepcopy(self.gameBoard)
+        return copyObj
 
     # Count the number of pieces already played
     def checkPieceCount(self):
@@ -47,20 +53,27 @@ class maxConnect4Game:
                 if not self.gameBoard[i][column]:
                     self.gameBoard[i][column] = self.currentTurn
                     self.pieceCount += 1
+                    if self.currentTurn == 1:
+                        self.currentTurn = 2
+                    elif self.currentTurn == 2:
+                        self.currentTurn = 1
                     return 1
 
     # The AI section. Currently plays randomly.
-    def aiPlay(self):
-        randColumn = random.randrange(0,7)
-        result = self.playPiece(randColumn)
+    def aiPlay(self, depth):
+        # Random Choice
+        #column = random.randrange(0,7)
+
+        # Minimax Algorithim
+        column = minimax(self, 1, depth)[0]
+        print("Finished Minimax. Result is", column)
+        result = self.playPiece(column)
         if not result:
-            self.aiPlay()
+            print("ERROR")
+            sys.exit(2)
+            #self.aiPlay(depth)
         else:
-            print('\n\nmove %d: Player %d, column %d\n' % (self.pieceCount, self.currentTurn, randColumn+1))
-            if self.currentTurn == 1:
-                self.currentTurn = 2
-            elif self.currentTurn == 2:
-                self.currentTurn = 1
+            print('\n\nmove %d: Player %d, column %d\n' % (self.pieceCount, self.currentTurn, column+1))
 
 
     # The Player section. Takes user input.
@@ -71,10 +84,6 @@ class maxConnect4Game:
             self.humanPlay()
         else:
             print('\n\nmove %d: Player %d, column %d\n' % (self.pieceCount, self.currentTurn, column))
-            if self.currentTurn == 1:
-                self.currentTurn = 2
-            elif self.currentTurn == 2:
-                self.currentTurn = 1
 
 
 
