@@ -6,7 +6,7 @@
 from math import inf
 
 # returns [move, score] here move is column.
-def minimax(currentGame, player, depth):
+def minimax(currentGame, player, alpha, beta, depth):
     #Game has points, so not 0 sum.
     if player == 1:     #1 is MAX   -1 is MIN
         best = [-1, -inf]
@@ -29,13 +29,19 @@ def minimax(currentGame, player, depth):
     for col in notFull:
         prevGame = currentGame.fullCopy()
         currentGame.playPiece(col)                                  #Execute move
-        [move, score] = minimax(currentGame, -player, depth - 1)    #Recur
+        [move, score] = minimax(currentGame, -player, alpha, beta, depth - 1)    #Recur
         currentGame = prevGame                                      #Undo move
         if player == 1:
             if score > best[1]:
                 best = [col, score]
+            if score > alpha:
+                alpha = score
         else:
             if score < best[1]:
                 best = [col, score]
+            if score < beta:
+                beta = score
+        if alpha >= beta:
+            break
 
     return best

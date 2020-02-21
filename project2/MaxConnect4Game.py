@@ -10,6 +10,7 @@ from copy import copy, deepcopy
 import random
 import sys
 from minimax import minimax
+from math import inf
 
 class maxConnect4Game:
     def __init__(self):
@@ -61,16 +62,16 @@ class maxConnect4Game:
 
     # The AI section. Currently plays randomly.
     def aiPlay(self, depth):
-        # Random Choice
-        #column = random.randrange(0,7)
+            # Random Choice
+            #column = random.randrange(0,7)
 
         # Minimax Algorithim
         game = self.fullCopy()
-        print("Before Minimax!", self.pieceCount)
-        self.printGameBoard()
-        column = minimax(game, 1, depth)[0]
-        print("After Minimax!", self.pieceCount)
-        self.printGameBoard()
+        #print("Before Minimax!", self.pieceCount)
+        #self.printGameBoard()
+        column = minimax(game, 1, -inf, inf, depth)[0]
+        #print("After Minimax!", self.pieceCount)
+        #self.printGameBoard()
         print("Finished Minimax. Result is", column)
         result = self.playPiece(column)
         if not result:
