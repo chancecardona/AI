@@ -62,8 +62,8 @@ class maxConnect4Game:
 
     # The AI section. Currently plays randomly.
     def aiPlay(self, depth):
-            # Random Choice
-            #column = random.randrange(0,7)
+        # Random Choice
+        #column = random.randrange(0,7)
 
         # Minimax Algorithim
         game = self.fullCopy()

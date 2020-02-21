@@ -14,12 +14,7 @@ def minimax(currentGame, player, alpha, beta, depth):
         best = [-1, inf]
 
     if depth == 0 or currentGame.pieceCount == 42:
-        currentGame.countScore()
-        #TODO find a better Evaluation Function than current Score
-        if currentGame.currentTurn == 1:
-            score = currentGame.player1Score
-        else:
-            score = currentGame.player2Score
+        score =  evalFunc(currentGame)
         return [-1, score]
 
     state = currentGame.gameBoard
@@ -28,20 +23,34 @@ def minimax(currentGame, player, alpha, beta, depth):
     notFull = (col for col in range(len(state[0])) if sumCol[col] < len(state))
     for col in notFull:
         prevGame = currentGame.fullCopy()
-        currentGame.playPiece(col)                                  #Execute move
-        [move, score] = minimax(currentGame, -player, alpha, beta, depth - 1)    #Recur
-        currentGame = prevGame                                      #Undo move
+        currentGame.playPiece(col)                                                  #Execute move
+        [move, score] = minimax(currentGame, -player, alpha, beta, depth - 1)       #Recur
+        currentGame = prevGame                                                      #Undo move
         if player == 1:
             if score > best[1]:
                 best = [col, score]
-            if score > alpha:
-                alpha = score
+            if best[1] > alpha:
+                alpha = best[1]
         else:
             if score < best[1]:
                 best = [col, score]
-            if score < beta:
-                beta = score
+            if best[1] < beta:
+                beta = best[1]
         if alpha >= beta:
             break
 
     return best
+
+
+def evalFunc(currentGame):
+    currentGame.countScore()
+    p1Score = currentGame.player1Score 
+    p2Score = currentGame.player2Score
+    #p1OddThreat = 
+    #p2OddThreat = 
+    #p1EvenThreat = 
+    #p2EvenThreat = 
+    if currentGame.currentTurn == 1:
+        return 1*p1Score - 1*p2Score
+    else:
+        return -1*p1Score + 1*p2Score
