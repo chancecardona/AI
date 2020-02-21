@@ -65,7 +65,12 @@ class maxConnect4Game:
         #column = random.randrange(0,7)
 
         # Minimax Algorithim
-        column = minimax(self, 1, depth)[0]
+        game = self.fullCopy()
+        print("Before Minimax!", self.pieceCount)
+        self.printGameBoard()
+        column = minimax(game, 1, depth)[0]
+        print("After Minimax!", self.pieceCount)
+        self.printGameBoard()
         print("Finished Minimax. Result is", column)
         result = self.playPiece(column)
         if not result:
