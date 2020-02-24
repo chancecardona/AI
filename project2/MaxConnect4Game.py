@@ -60,6 +60,18 @@ class maxConnect4Game:
                         self.currentTurn = 1
                     return 1
 
+    def undoPiece(self, column):
+        if self.gameBoard[5][column]:
+            for i in range(6):
+                if self.gameBoard[i][column]:
+                    self.gameBoard[i][column] = 0
+                    self.pieceCount -= 1
+                    if self.currentTurn == 1:
+                        self.currentTurn = 2
+                    elif self.currentTurn == 2:
+                        self.currentTurn = 1
+                    return 1
+
     # The AI section. Currently plays randomly.
     def aiPlay(self, depth):
         # Random Choice

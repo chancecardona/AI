@@ -22,10 +22,9 @@ def minimax(currentGame, player, alpha, beta, depth):
     sumCol = [ sum( [1 for i in range(len(state)) if state[i][j]] ) for j in range(len(state[0])) ]
     notFull = (col for col in range(len(state[0])) if sumCol[col] < len(state))
     for col in notFull:
-        prevGame = currentGame.fullCopy()
         currentGame.playPiece(col)                                                  #Execute move
         [move, score] = minimax(currentGame, -player, alpha, beta, depth - 1)       #Recur
-        currentGame = prevGame                                                      #Undo move
+        currentGame.undoPiece(col)                                                  #Undo move
         if player == 1:
             if score > best[1]:
                 best = [col, score]
@@ -44,12 +43,12 @@ def minimax(currentGame, player, alpha, beta, depth):
 
 def evalFunc(currentGame):
     currentGame.countScore()
-    p1Score = currentGame.player1Score 
+    p1Score = currentGame.player1Score
     p2Score = currentGame.player2Score
-    #p1OddThreat = 
-    #p2OddThreat = 
-    #p1EvenThreat = 
-    #p2EvenThreat = 
+    #p1OddThreat =
+    #p2OddThreat =
+    #p1EvenThreat =
+    #p2EvenThreat =
     if currentGame.currentTurn == 1:
         return 1*p1Score - 1*p2Score
     else:
