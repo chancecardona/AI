@@ -6,8 +6,9 @@
 #              and assorted functions
 #
 # Created:     09/25/2011
-# Last Edited: 07/22/2013  
-# Notes:       *This contains code ported by Christopher Conly from C++ code
+# Last Edited: 04/06/2020
+# Notes:       *Code modified for python3 by Chance Cardona
+#              *This contains code ported by Christopher Conly from C++ code
 #               provided by Dr. Vassilis Athitsos
 #              *Several integer and string variables are put into lists. This is
 #               to make them mutable so each recursive call to a function can
@@ -20,7 +21,7 @@
 #               called le, we'd call foo(le.symbol,...). If foo needs to modify
 #               le.symbol, it will need to index it (i.e. le.symbol[0]) so that
 #               the change will persist.
-#              *Written to be Python 2.4 compliant for omega.uta.edu
+#              *Written to be Python 3.8 compliant
 #-------------------------------------------------------------------------------
 
 import sys
@@ -42,7 +43,7 @@ class logical_expression:
 def print_expression(expression, separator):
     """Prints the given expression using the given separator"""
     if expression == 0 or expression == None or expression == '':
-        print '\nINVALID\n'
+        print('\nINVALID\n')
 
     elif expression.symbol[0]: # If it is a base case (symbol)
         sys.stdout.write('%s' % expression.symbol[0])
@@ -87,7 +88,7 @@ def read_subexpressions(input_string, counter, subexpressions):
     length = len(input_string)
     while True:
         if counter[0] >= length:
-            print '\nUnexpected end of input.\n'
+            print('\nUnexpected end of input.\n')
             return 0
 
         if input_string[counter[0]] == ' ':     # Skip whitespace
@@ -163,5 +164,9 @@ def valid_symbol(symbol):
 
 # End of ported code
 #-------------------------------------------------------------------------------
+def check_true_false():
+    """Determines if a knowledge base kb entails a statement."""
+    pass
+
 
 # Add all your functions here
