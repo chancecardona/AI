@@ -168,15 +168,13 @@ def valid_symbol(symbol):
 
 def check_true_false(knowledge_base, statement):
     """Determines if a knowledge base kb entails a statement."""
-    statementEntailed = False
-    negationEntailed = False
     negation = logical_expression()
     negation.connective[0] = 'not'
     negation.subexpressions.append(statement)
-    if tt_entails(knowledge_base, statement):
-        statementEntailed = True
-    if tt_entails(knowledge_base, negation):
-        negationEntailed = True
+    print('TF: KB statement')
+    statementEntailed = tt_entails(knowledge_base, statement)
+    print('TF: KB negation')
+    negationEntailed = tt_entails(knowledge_base, negation)
 
     if statementEntailed and negationEntailed:
         return 'both true and false'
@@ -187,21 +185,19 @@ def check_true_false(knowledge_base, statement):
     else:
         return 'possibly true, possibly false'
 
-#TODO implement TT_entails Algorithm for truth table entailment.
-#       check_all and extract symbols.
-#TODO extract symbols stores in a list the set of all symbols from all 3 txt files
-
-#TODO check_true_false takes a kb, a statement, and set of boolean assignments
-#   for each symbol to check if kb entails statement.
-#   this may be just the code used for hw q 5 for def true, etc w/ resolution alg.
 
 def tt_entails(knowledge_base, statement):
+    """Checks if a knowledge base entails a statement"""
     symbols = set({})
     extract_symbols(knowledge_base, symbols)
     extract_symbols(statement, symbols)
     return tt_check_all(knowledge_base, statement, symbols, model={})
 
 def tt_check_all(knowledge_base, statement, symbols, model):
+    """Recursively enumerates a truth table for all symbols in kb and statement.
+    Uses set symbols and dict model (string:bool)"""
+    print('check all symbols:', symbols)
+    print('check all model:', model)
     if len(symbols) == 0:
         if pl_true(knowledge_base, model):
             return pl_true(statement, model)
@@ -216,6 +212,7 @@ def tt_check_all(knowledge_base, statement, symbols, model):
         return pTrue and pFalse
 
 def pl_true(statement, model):
+    """Checks if a statement is true given a model."""
     if statement.symbol[0]:		#base case
         return model[statement.symbol[0]]
     if statement.connective[0].lower() == 'and':
@@ -229,7 +226,7 @@ def pl_true(statement, model):
         for subexpression in statement.subexpressions:
             if pl_true(subexpression, model):
                 return True
-        return True
+        return False
     elif statement.connective[0].lower() == 'xor':
         numTrue = 0
         for subexpression in statement.subexpressions:

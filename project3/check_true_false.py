@@ -87,10 +87,12 @@ def main(argv):
         sys.exit('invalid statement')
 
     # Show us what the statement is
-    print('\nChecking statement: ', print_expression(statement, ''))
+    print('\nChecking statement: ')
+    print_expression(statement, '')
 
     # Run the statement through the inference engine
     print(check_true_false(knowledge_base, statement))
+
     sys.exit(1)
 
 
