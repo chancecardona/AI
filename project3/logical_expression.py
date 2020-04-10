@@ -188,7 +188,7 @@ def check_true_false(knowledge_base, statement):
 
 def tt_entails(knowledge_base, statement):
     """Checks if a knowledge base entails a statement"""
-    symbols = set({})
+    symbols = {}
     extract_symbols(knowledge_base, symbols)
     extract_symbols(statement, symbols)
     return tt_check_all(knowledge_base, statement, symbols, model={})
@@ -204,7 +204,7 @@ def tt_check_all(knowledge_base, statement, symbols, model):
         else:
             return True
     else:
-        P = symbols.pop()
+        P = symbols.popitem()[0]
         model[P] = True
         pTrue = tt_check_all(knowledge_base, statement, symbols, model)
         model[P] = False
@@ -248,7 +248,7 @@ def pl_true(statement, model):
 
 def extract_symbols(statement, symbols): #symbols is a set.
     if statement.symbol[0]:
-        symbols.add(statement.symbol[0])
+        symbols[statement.symbol[0]] = None
     else:
         for subexpression in statement.subexpressions:
             extract_symbols(subexpression, symbols)
