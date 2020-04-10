@@ -164,9 +164,94 @@ def valid_symbol(symbol):
 
 # End of ported code
 #-------------------------------------------------------------------------------
-def check_true_false():
-    """Determines if a knowledge base kb entails a statement."""
-    pass
-
-
 # Add all your functions here
+
+def check_true_false(knowledge_base, statement):
+    """Determines if a knowledge base kb entails a statement."""
+    statementEntailed = False
+    negationEntailed = False
+    negation = logical_expression()
+    negation.connective[0] = 'not'
+    negation.subexpressions.append(statement)
+    if tt_entails(knowledge_base, statement):
+        statementEntailed = True
+    if tt_entails(knowledge_base, negation):
+        negationEntailed = True
+
+    if statementEntailed and negationEntailed:
+        return 'both true and false'
+    elif statementEntailed:
+        return 'definitely true'
+    elif negationEntailed:
+        return 'definitely false'
+    else:
+        return 'possibly true, possibly false'
+
+#TODO implement TT_entails Algorithm for truth table entailment.
+#       check_all and extract symbols.
+#TODO extract symbols stores in a list the set of all symbols from all 3 txt files
+
+#TODO check_true_false takes a kb, a statement, and set of boolean assignments
+#   for each symbol to check if kb entails statement.
+#   this may be just the code used for hw q 5 for def true, etc w/ resolution alg.
+
+def tt_entails(knowledge_base, statement):
+    symbols = set({})
+    extract_symbols(knowledge_base, symbols)
+    extract_symbols(statement, symbols)
+    return tt_check_all(knowledge_base, statement, symbols, model={})
+
+def tt_check_all(knowledge_base, statement, symbols, model):
+    if len(symbols) == 0:
+        if pl_true(knowledge_base, model):
+            return pl_true(statement, model)
+        else:
+            return True
+    else:
+        P = symbols.pop()
+        model[P] = True
+        pTrue = tt_check_all(knowledge_base, statement, symbols, model)
+        model[P] = False
+        pFalse = tt_check_all(knowledge_base, statement, symbols, model)
+        return pTrue and pFalse
+
+def pl_true(statement, model):
+    if statement.symbol[0]:		#base case
+        return model[statement.symbol[0]]
+    if statement.connective[0].lower() == 'and':
+        if len(statement.subexpressions) == 0:
+            return True
+        for subexpression in statement.subexpressions:
+            if not pl_true(subexpression, model):
+                return False
+        return True
+    elif statement.connective[0].lower() == 'or':
+        for subexpression in statement.subexpressions:
+            if pl_true(subexpression, model):
+                return True
+        return True
+    elif statement.connective[0].lower() == 'xor':
+        numTrue = 0
+        for subexpression in statement.subexpressions:
+            if pl_true(subexpression, model):
+                numTrue += 1
+        if numTrue == 1:
+            return True
+        return False
+    elif statement.connective[0].lower() == 'not':
+        return not pl_true(statement.subexpressions[0], model)
+    elif statement.connective[0].lower() == 'if':
+        if pl_true(statement.subexpressions[0], model) and not pl_true(statement.subexpressions[1], model):
+            return False
+        return True
+    elif statement.connective[0].lower() == 'iff':
+        if pl_true(statement.subexpressions[0], model) == pl_true(statement.subexpressions[1], model):
+            return True
+        return False
+
+def extract_symbols(statement, symbols): #symbols is a set.
+    if statement.symbol[0]:
+        symbols.add(statement.symbol[0])
+    else:
+        for subexpression in statement.subexpressions:
+            extract_symbols(subexpression, symbols)

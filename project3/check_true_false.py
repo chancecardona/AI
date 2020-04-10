@@ -90,8 +90,7 @@ def main(argv):
     print('\nChecking statement: ', print_expression(statement, ''))
 
     # Run the statement through the inference engine
-    check_true_false(knowledge_base, statement)
-
+    print(check_true_false(knowledge_base, statement))
     sys.exit(1)
 
 

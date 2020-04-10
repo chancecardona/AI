@@ -18,7 +18,7 @@
 
 #Rule 2
 #If there is a stench then there is a monster at 1 of the adjacent squares
-(if S_2_1 (xor M_3_1)
+(if S_2_1 (xor M_3_1))
 (if S_3_1 (xor M_4_1 M_3_2))
 (if S_4_1 (xor M_3_1 M_4_2))
 (if S_3_2 (xor M_3_1 M_4_2 M_3_3))
@@ -49,7 +49,7 @@
 
 #Rule 4
 #If there is a breeze there can be pit(s) in any of the adjacent squares
-(if B_2_1 (or P_3_1)
+(if B_2_1 (or P_3_1))
 (if B_3_1 (or P_4_1 P_3_2))
 (if B_4_1 (or P_3_1 P_4_2))
 (if B_3_2 (or P_3_1 P_4_2 P_3_3))
