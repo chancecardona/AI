@@ -171,9 +171,7 @@ def check_true_false(knowledge_base, statement):
     negation = logical_expression()
     negation.connective[0] = 'not'
     negation.subexpressions.append(statement)
-    print('TF: KB statement')
     statementEntailed = tt_entails(knowledge_base, statement)
-    print('TF: KB negation')
     negationEntailed = tt_entails(knowledge_base, negation)
 
     if statementEntailed and negationEntailed:
@@ -189,27 +187,41 @@ def check_true_false(knowledge_base, statement):
 def tt_entails(knowledge_base, statement):
     """Checks if a knowledge base entails a statement"""
     symbols = {}
-    extract_symbols(knowledge_base, symbols)
+    extract_symbols(knowledge_base, symbols) #Gets all unique symbols from KB
     extract_symbols(statement, symbols)
-    return tt_check_all(knowledge_base, statement, symbols, model={})
+    assign_symbols(knowledge_base, symbols) #Gets all unique symbols from KB and assigns them (statements must be literals!)
+    return tt_check_all(knowledge_base, statement, symbols)
 
-def tt_check_all(knowledge_base, statement, symbols, model):
+
+def tt_check_all(knowledge_base, statement, symbols, model={}):
     """Recursively enumerates a truth table for all symbols in kb and statement.
     Uses set symbols and dict model (string:bool)"""
-    print('check all symbols:', symbols)
-    print('check all model:', model)
+    #print('check all symbols:', symbols)
+    #print('model:', model)
     if len(symbols) == 0:
         if pl_true(knowledge_base, model):
             return pl_true(statement, model)
         else:
             return True
     else:
-        P = symbols.popitem()[0]
-        model[P] = True
-        pTrue = tt_check_all(knowledge_base, statement, symbols, model)
-        model[P] = False
-        pFalse = tt_check_all(knowledge_base, statement, symbols, model)
-        return pTrue and pFalse
+        P = list(symbols)[0]
+        if symbols[P] != None: #Already defined through KB
+            #print(P, 'already assigned.')
+            model[P] = symbols[P]
+            symbols.pop(P)
+            pModel = tt_check_all(knowledge_base, statement, symbols, model)
+            symbols[P] = model[P]
+            return pModel
+        else:                   #Not already defined. Enumerate.
+            #print(P, 'isnt')
+            symbols.pop(P)
+            model[P] = True
+            pTrue = tt_check_all(knowledge_base, statement, symbols, model)
+            model[P] = False
+            pFalse = tt_check_all(knowledge_base, statement, symbols, model)
+            symbols[P] = None
+            return pTrue and pFalse
+
 
 def pl_true(statement, model):
     """Checks if a statement is true given a model."""
@@ -246,9 +258,20 @@ def pl_true(statement, model):
             return True
         return False
 
-def extract_symbols(statement, symbols): #symbols is a set.
+def extract_symbols(statement, symbols):
+    """Finds set of unique symbols from a statement."""
     if statement.symbol[0]:
         symbols[statement.symbol[0]] = None
     else:
         for subexpression in statement.subexpressions:
             extract_symbols(subexpression, symbols)
+
+def assign_symbols(statement, symbols):
+    """Assigns symbols to values from literals in KB
+    example KB with proper literals: (and a (not b) c (not d)) etc."""
+    if statement.connective[0].lower() == 'and':
+        for subexpression in statement.subexpressions:
+            if subexpression.connective[0].lower() == 'not' and subexpression.subexpressions[0].symbol[0]:
+                symbols[subexpression.subexpressions[0].symbol[0]] = False
+            elif subexpression.symbol[0]:
+                symbols[subexpression.symbol[0]] = True

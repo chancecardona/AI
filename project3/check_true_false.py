@@ -53,7 +53,7 @@ def main(argv):
         print('failed to open file %s' % argv[2])
         sys.exit(0)
 
-    # Add expressions to knowledge base
+    # Create knowledge base 2 with agent observations (MUST BE LITERALS (a symbol or a not(symbol)))
     print('Loading additional knowledge...')
     for line in input_file:
         # Skip comments and blank lines. Consider all line ending types.
@@ -70,6 +70,7 @@ def main(argv):
 
     # I had left this line out of the original code. If things break, comment out.
     print_expression(knowledge_base, '\n')
+    print('\n')
 
     # Read statement whose entailment we want to determine
     try:
@@ -87,8 +88,9 @@ def main(argv):
         sys.exit('invalid statement')
 
     # Show us what the statement is
-    print('\nChecking statement: ')
-    print_expression(statement, '')
+    print('\nChecking statement: ', end='')
+    print_expression(statement, '\n')
+    print('\n')
 
     # Run the statement through the inference engine
     print(check_true_false(knowledge_base, statement))
